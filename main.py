@@ -621,7 +621,7 @@ class overlay(QtGui.QWidget):
 
         # use an animated gif file you have in the working folder
         # or give the full file path
-        self.movie = QtGui.QMovie("icons/loader3.gif", QtCore.QByteArray(), self)
+        self.movie = QtGui.QMovie("icons/loader.gif", QtCore.QByteArray(), self)
         self.movie.setCacheMode(QtGui.QMovie.CacheAll)
         self.movie.setSpeed(100)
         self.movie_screen.setMovie(self.movie)
@@ -641,7 +641,7 @@ class Ventana(QtGui.QMainWindow):
         self.setGeometry(300, 300, 1000, 550)
         self.setWindowTitle("IRIS Monitoring Toolbox")
         #icono
-        self.setWindowIcon(QtGui.QIcon('icons/logo2.png'))
+        self.setWindowIcon(QtGui.QIcon('icons/logo.png'))
         bar  =  self.menuBar()
         file  = bar.addMenu("File")
         file.addAction("&Load...", self.getfile, "Ctrl+L")
@@ -780,7 +780,7 @@ class Ventana(QtGui.QMainWindow):
         # msgbox = QtGui.QMessageBox()
         # msgbox.setFont(font)
         # msgbox.information(self, "Download Message", "Esto es un mensaje de \n prueba")
-        QtGui.QMessageBox.about(self, "About", "<font color=\"black\" size=\"4\" face=\"Arial\"><pre>Copyright 2016 Nicol&aacute;s Boettcher<br />This program is for monitoring and create Mininet topologies.\n<br />It may be used and modified with no restriction; raw copies as well<br />as modified versions may be distributed without limitation.\n<br /><br /><img src=\"icons/github.png\" width=\"16\" height=\"13\" />  <a href=\"https://github.com/dragonxtek\">https://github.com/dragonxtek</a><br /><img src=\"icons/blogspot.ico\" width=\"16\" height=\"16\" />  <a href=\"https://installfights.blogspot.cl\">https://installfights.blogspot.cl</a><br /><img src=\"icons/gmail.png\" width=\"16\" height=\"16\" />  <a href=\"mailto:nicolas.boettcher@gmail.com?subject=Sent%20from%20IRIS\">nicolas.boettcher@gmail.com</a></pre></font>")
+        QtGui.QMessageBox.about(self, "About", "<font color=\"black\" size=\"4\" face=\"Arial\"><pre>Copyright 2016 Nicol&aacute;s Boettcher<br />This program is for monitoring and create Mininet topologies.\n<br />It may be used and modified with no restriction; raw copies as well<br />as modified versions may be distributed without limitation.\n<br /><br /><img src=\"icons/github.png\" width=\"16\" height=\"13\" />  <a href=\"https://github.com/dragonxtek/IRIS\">https://github.com/dragonxtek/IRIS</a><br /><img src=\"icons/blogspot.ico\" width=\"16\" height=\"16\" />  <a href=\"https://installfights.blogspot.cl\">https://installfights.blogspot.cl</a><br /><img src=\"icons/twitter.png\" width=\"16\" height=\"16\" />  <a href=\"https://twitter.com/nicoboettcher\">@nicoboettcher</a><br /><img src=\"icons/gmail.png\" width=\"16\" height=\"16\" />  <a href=\"mailto:nicolas.boettcher@gmail.com?subject=Sent%20from%20IRIS\">nicolas.boettcher@gmail.com</a></pre></font>")
 
 
     def open_preferences(self):
