@@ -1,6 +1,6 @@
 <img src="https://github.com/dragonxtek/IRIS/raw/master/icons/logo.png" width="100" height="100" />
 
-## **Inmersive SDN Monitoring Toolkit**    
+## **Immersive SDN Monitoring Toolkit**    
 
 To run IRIS succesfull it needs the following:
 This version of mininet, that includes an extra test module calls pingpairdelay. It enable execute pingpair after a delay that waits for STP was finish. 
