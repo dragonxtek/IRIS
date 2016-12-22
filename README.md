@@ -8,3 +8,7 @@ https://github.com/dragonxtek/mininet
 
 Also, needs Influxdb2MagicBlue if you want to connect Influxdb to MagicBlue bulb. Add Influxdb2MagicBlue to your PATH to run it without specify where is it. 
 https://github.com/dragonxtek/Influxdb2MagicBlue
+
+An example of IRIS working with AT&T topology:
+
+<img src="https://raw.githubusercontent.com/dragonxtek/IRIS/master/screenshots/IRIS.png" width="500" height="300" />
