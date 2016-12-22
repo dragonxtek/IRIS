@@ -808,9 +808,7 @@ class Ventana(QtGui.QMainWindow):
         else:
             print('Conviertiendo...')
             global graphml
-
-            # self.mininet_topology(graphml,False)
-            self.mininet_topology(graphml)
+            self.networkx2mininet(graphml)
             self.consola.button.setEnabled(True)
             self.stp2.setEnabled(True)
 
@@ -883,7 +881,7 @@ class Ventana(QtGui.QMainWindow):
     def getfile(self):
 
         fname = QFileDialog.getOpenFileName(self, 'Open file',
-        '/home/nboettcher/Doctorado/cursos/2016/2016-2/python/proyecto/final/',
+        '/',
                                                     "GraphML files (*.graphml)")
         #  Si se abre un archivo, entonces:
         if fname:
@@ -927,7 +925,7 @@ class Ventana(QtGui.QMainWindow):
                 output +=  i
         return output
 
-    def mininet_topology(self,filename_r, filename_w='topology.py'):
+    def networkx2mininet(self,filename_r, filename_w='topology.py'):
         #  TODO load wireless topologies
         g = nx.read_graphml(filename_r)
         # Start to create filename_w
