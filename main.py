@@ -579,7 +579,6 @@ class MyDynamicMplCanvas3(Qt4MplCanvas3):
                         print('no se encontro la ruta {} con la tupla {}').format(i, hosts)
 
         # Grafica los nodos host y switches preconfigurados
-        #  Fix this issue: RuntimeWarning: More than 20 figures have been opened. Figures created through the pyplot interface (`matplotlib.pyplot.figure`) are retained until explicitly closed and may consume too much memory. (To control this warning, see the rcParam `figure.max_open_warning`).
         plt.close('all')
         nx.draw(self.g, self.pos, node_color = self.edges_color(src,dst), edge_color = self.bw, width = 4, edge_cmap = plt.cm.jet,
                 edge_vmin = self.vmin, edge_vmax = bw, with_labels = True, ax = self.axes)
@@ -603,32 +602,15 @@ class MyDynamicMplCanvas3(Qt4MplCanvas3):
 
     def lee_influxdb(self, num = 1):
         client  =  InfluxDBClient(host, port, user, password, dbname)
-        # result  =  client.query('select hostA,hostB,'+value+' from edges where time > now() - 1h limit '+str(num)+';')
-        # print value+" "+measurement+" "+topology+" "+str(num)
         consulta = 'select src,dst,' + value + ' from ' + measurement + ' where topology  =  \'' + topology + '\' order by time desc limit ' + str(num) + ';'
         try:
-            print consulta
-            # print 'el query es: '+client.query(consulta)
             result = client.query(consulta)
-            print("Result: {0}".format(result))
-            print result._get_series()[0].get('values')
             return result._get_series()[0].get('values')
 
-        # except:
-        #     print 'error'
-        #     return 0
-        except IOError as e:
-            errno, strerror = e.args
-            print("I/O error({0}): {1}".format(errno, strerror))
-            # e can be printed directly without using .args:
-            # print(e)
-            return 0
-        except ValueError:
-            print("No valid integer in line.")
-            return 0
         except:
-            print("Unexpected error:", sys.exc_info()[0])
             return 0
+
+
 class overlay(QtGui.QWidget):
     def __init__(self, parent=None):
         QtGui.QWidget.__init__(self, parent)
@@ -667,32 +649,26 @@ class Ventana(QtGui.QMainWindow):
         QtGui.QWidget.__init__(self)
         self.setGeometry(300, 300, 1000, 550)
         self.setWindowTitle("IRIS Monitoring Toolbox")
-        #icono
+        # set app icon
         self.setWindowIcon(QtGui.QIcon('icons/logo.png'))
-        bar  =  self.menuBar()
-        file  = bar.addMenu("File")
+        bar = self.menuBar()
+        file = bar.addMenu("File")
         file.addAction("&Load...", self.getfile, "Ctrl+L")
         file.addSeparator()
         file.addAction('&Quit', self.close, "Ctrl+Q")
-        tools  = bar.addMenu("Tools")
+        tools = bar.addMenu("Tools")
         tools.addAction("&Preferences", self.open_preferences, "Ctrl+P")
         win = bar.addMenu("Windows")
         win.addAction("&Graph", self.open_graph, "Ctrl+G")
         win.addAction("&Mininet", self.open_mininet, "Ctrl+M")
-        help  =  bar.addMenu("Help")
+        help = bar.addMenu("Help")
         help.addAction("&About", self.about)
 
         self.statusBar = QStatusBar()
-        self.b  =  QPushButton("click here")
+        self.b = QPushButton("click here")
         self.setWindowTitle("IRIS Monitoring Toolbox")
         self.setStatusBar(self.statusBar)
         self.createDockWindows()
-
-    # def openFile(self):
-    #     self.getfile()
-
-    # def fileQuit(self):
-    #     self.close()
 
     def open_graph(self):
         self.dock1.show()
@@ -908,8 +884,7 @@ class Ventana(QtGui.QMainWindow):
     def getfile(self):
 
         fname = QFileDialog.getOpenFileName(self, 'Open file',
-        # '/',
-          '/home/nboettcher/Dropbox/python/proyecto/topologias',
+        '/',
                                                     "GraphML files (*.graphml)")
         #  Si se abre un archivo, entonces:
         if fname:
