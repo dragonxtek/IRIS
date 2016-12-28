@@ -65,6 +65,7 @@ password = 'admin'
 dbname = 'sdn'
 measurement = 'edges'
 value="bw"
+value_index=0
 topology = 'None'
 # Graph variable
 grafo = 'g'
@@ -172,6 +173,7 @@ class StackedExample(QWidget):
     def stack2UI(self):
         # Execute your controller as follows:
         # ryu-manager --verbose --ofp-tcp-listen-port 6633 ryu.app.simple_switch_stp_13
+        # ryu-manager --verbose --ofp-tcp-listen-port 6633 simple_switch_stp.py
         layout = QFormLayout()
         self.cip = QLineEdit()
         self.cip.setText(controller_ip)
@@ -212,11 +214,13 @@ class StackedExample(QWidget):
         self.table.setText(measurement)
         layout.addRow("table", self.table)
         self.table.editingFinished.connect(self.db_table_change)
-        value = QComboBox()
-        value.addItems(["bw", "delay"])
-        # TODO enable dynamic
-        value.model().item(1).setEnabled(False)
-        layout.addRow(QLabel("value"), value)
+        self.value = QComboBox()
+        self.value.addItems(["bw", "delay"])
+        # TODO enable dynamic bw or delay
+        # value.model().item(1).setEnabled(False)
+        self.value.setCurrentIndex(value_index)
+        self.value.currentIndexChanged.connect(self.value_change)
+        layout.addRow(QLabel("value"), self.value)
         self.user = QLineEdit()
         self.user.setText(user)
         layout.addRow("user", self.user)
@@ -276,6 +280,12 @@ class StackedExample(QWidget):
 
     def display(self, i):
         self.Stack.setCurrentIndex(i)
+
+    def value_change(self, i):
+        global value, value_index
+        value = str(self.value.currentText())
+        value_index = i
+        print "se eligio "+value+" en la pos "+str(value_index)
 
     def db_ip_change(self):
         global host
@@ -536,7 +546,7 @@ class MyDynamicMplCanvas3(Qt4MplCanvas3):
         self.fig  =  plt.figure(figsize = (5, 4))
         global db_enabled
         if db_enabled == True:
-            self.valor  =  self.lee_influxdb('bw', self.g.number_of_edges())
+            self.valor  =  self.lee_influxdb(self.g.number_of_edges())
             if self.valor == 0:
                 return 1
             # obtiene el orden de los enlaces
@@ -554,7 +564,7 @@ class MyDynamicMplCanvas3(Qt4MplCanvas3):
         global db_enabled
         # Obtiene los valores de la bd
         if db_enabled == True:
-            valor  =  self.lee_influxdb('bw', self.g.number_of_edges())
+            valor  =  self.lee_influxdb(self.g.number_of_edges())
             # Verifica que existan valores en la bd
             if valor != 0:
                 # obtiene los valores de la bd
@@ -591,17 +601,34 @@ class MyDynamicMplCanvas3(Qt4MplCanvas3):
                 lista.append(color_switch)
         return lista
 
-    def lee_influxdb(self, value = value, num = 1):
+    def lee_influxdb(self, num = 1):
         client  =  InfluxDBClient(host, port, user, password, dbname)
         # result  =  client.query('select hostA,hostB,'+value+' from edges where time > now() - 1h limit '+str(num)+';')
         # print value+" "+measurement+" "+topology+" "+str(num)
         consulta = 'select src,dst,' + value + ' from ' + measurement + ' where topology  =  \'' + topology + '\' order by time desc limit ' + str(num) + ';'
         try:
+            print consulta
+            # print 'el query es: '+client.query(consulta)
             result = client.query(consulta)
+            print("Result: {0}".format(result))
+            print result._get_series()[0].get('values')
             return result._get_series()[0].get('values')
-        except:
-            return 0
 
+        # except:
+        #     print 'error'
+        #     return 0
+        except IOError as e:
+            errno, strerror = e.args
+            print("I/O error({0}): {1}".format(errno, strerror))
+            # e can be printed directly without using .args:
+            # print(e)
+            return 0
+        except ValueError:
+            print("No valid integer in line.")
+            return 0
+        except:
+            print("Unexpected error:", sys.exc_info()[0])
+            return 0
 class overlay(QtGui.QWidget):
     def __init__(self, parent=None):
         QtGui.QWidget.__init__(self, parent)
@@ -881,7 +908,8 @@ class Ventana(QtGui.QMainWindow):
     def getfile(self):
 
         fname = QFileDialog.getOpenFileName(self, 'Open file',
-        '/',
+        # '/',
+          '/home/nboettcher/Dropbox/python/proyecto/topologias',
                                                     "GraphML files (*.graphml)")
         #  Si se abre un archivo, entonces:
         if fname:
